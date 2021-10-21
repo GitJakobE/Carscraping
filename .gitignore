@@ -1,0 +1,6 @@
+*copy*.*
+.vscode
+notes/
+*.xls
+*.xlsx
+*.csv
