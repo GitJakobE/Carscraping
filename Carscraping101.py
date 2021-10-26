@@ -52,6 +52,8 @@ def loadData():
     return dfbrand_local, dfcarprice_local
 
 def saveData(dfbrand, dfcarprice):
+    print("Saving dataframe")
+    print(dfcarprice.columns)
     try:
         dfbrand.to_csv(strBrandfile, index=False)
     except:
@@ -113,10 +115,13 @@ def gothroughPages(url, dfbrand, dfcarprice, hds):
     dfbrand, dfcarprice = AddSoupTooDF(soup, dfbrand, dfcarprice)
     print("carprices :" + str(len(dfcarprice)) + "   models: "+ str(len(dfbrand)))
     
-    localAntalbiler = 32
-    titel =(re.findall(r'\d+',soup.find("title").text))
-    if(len(titel)>0):
-        localAntalbiler = (int) (titel[0])
+    localAntalbiler = 0
+    try:
+        titel =(re.findall(r'\d+',soup.find("title").text))
+        if(len(titel)>0):
+            localAntalbiler = (int) (titel[0])
+    except:
+        print("ERROR in trying to find title")
     print("Der er {} biler i mærket".format(localAntalbiler))
     return localAntalbiler, dfbrand, dfcarprice
    
@@ -240,15 +245,16 @@ def main():
         # urllist = ["https://www.bilbasen.dk/brugt/bil/"+brand+"?includeengroscvr=true&pricefrom=0&includeleasing=false&page="+str(i) for i in range(1, antalsider)]
         i =1
         antalsider=100
-        dfbrand, dfcarprice = loadData()
+
         while(i<antalsider+1):
             
             url = "https://www.bilbasen.dk/brugt/bil/"+brand+"?IncludeEngrosCVR=false&PriceFrom=0&includeLeasing=false&NewAndUsed=2&WithInLast=30&IncludeWithoutVehicleRegistrationTax=false&IncludeSellForCustomer=false&page="+str(i)
-                  # "https://www.bilbasen.dk/brugt/bil/peugeot?includeengroscvr=false&pricefrom=0&includeleasing=false&newandused=2&withinlast=2&includewithoutvehicleregistrationtax=false&includesellforcustomer=false&page=2"
-            #     "https://www.bilbasen.dk/brugt/bil/"+brand+"?includeengroscvr=true&pricefrom=0&includeleasing=false&page="+str(i)
-                # url =https://www.bilbasen.dk/brugt/bil/Peugeot?IncludeEngrosCVR=false&PriceFrom=0&includeLeasing=false&NewAndUsed=2&WithInLast=2&IncludeWithoutVehicleRegistrationTax=false&IncludeSellForCustomer=false
-                  # "https://www.bilbasen.dk/brugt/bil/Peugeot?IncludeEngrosCVR=false&PriceFrom=0&includeLeasing=false&NewAndUsed=2&WithInLast=2&IncludeWithoutVehicleRegistrationTax=false&IncludeSellForCustomer=false"
-                  # "https://www.bilbasen.dk/brugt/bil/Peugeot?IncludeEngrosCVR=false&PriceFrom=0&includeLeasing=false&NewAndUsed=2&WithInLast=2&IncludeWithoutVehicleRegistrationTax=false&IncludeSellForCustomer=false"
+            url = "https://www.bilbasen.dk/brugt/bil/"+brand+"?IncludeEngrosCVR=false&PriceFrom=0&includeLeasing=false&NewAndUsed=2&IncludeWithoutVehicleRegistrationTax=false&IncludeSellForCustomer=false&page="+str(i)
+                #"https://www.bilbasen.dk/brugt/bil/peugeot?includeengroscvr=false&pricefrom=0&includeleasing=false&newandused=2&withinlast=2&includewithoutvehicleregistrationtax=false&includesellforcustomer=false&page=2"
+                #"https://www.bilbasen.dk/brugt/bil/"+brand+"?includeengroscvr=true&pricefrom=0&includeleasing=false&page="+str(i)
+                #url =https://www.bilbasen.dk/brugt/bil/Peugeot?IncludeEngrosCVR=false&PriceFrom=0&includeLeasing=false&NewAndUsed=2&WithInLast=2&IncludeWithoutVehicleRegistrationTax=false&IncludeSellForCustomer=false
+                #"https://www.bilbasen.dk/brugt/bil/Peugeot?IncludeEngrosCVR=false&PriceFrom=0&includeLeasing=false&NewAndUsed=2&WithInLast=2&IncludeWithoutVehicleRegistrationTax=false&IncludeSellForCustomer=false"
+                #"https://www.bilbasen.dk/brugt/bil/Peugeot?IncludeEngrosCVR=false&PriceFrom=0&includeLeasing=false&NewAndUsed=2&WithInLast=2&IncludeWithoutVehicleRegistrationTax=false&IncludeSellForCustomer=false"
             
             
             #On the page it says how many cars there are in the brand. That determines how many pages we will go through
@@ -260,7 +266,8 @@ def main():
             # time.sleep(random.choice(rate))
             i= i+1
         saveData(dfbrand, dfcarprice)
-    print('-----------------------Main finishing----------------------')
+        time.sleep(3)
+    print('-----------------------Main finishing----------------------'+ str(pd.Timestamp.now()))
 
 # %%
 # schedule.every(1).second.do(mainTEST)
@@ -269,8 +276,8 @@ schedule.every().day.at("18:00").do(main)
 print('Starting carscraping101')
 main()
 
-while 1:
-    schedule.run_pending()
-    time.sleep(1)
+# while 1:
+#     schedule.run_pending()
+#     time.sleep(1)
 
 
