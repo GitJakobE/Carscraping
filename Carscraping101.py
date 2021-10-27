@@ -14,6 +14,7 @@ import re
 import time
 import random
 import schedule
+import xlsxwriter
 from bs4 import BeautifulSoup
 
 from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier#, ExtraTreesRegressor
@@ -35,6 +36,7 @@ dfcarprice = pd.DataFrame()
 strBrandfile = r"D:\Carscarping\BrandModels.csv"
 str_df_file_temp = r"D:\Carscarping\Carscraping.xls"
 str_df_file = r"D:\Carscarping\Carscraping.xlsx"
+str_df_file_csv = r"D:\Carscarping\Carscraping.csv"
 subcatagories_df_file =  r"D:\Carscarping\subcats.csv"
 subcatagories = [] 
 # get/set
@@ -45,15 +47,18 @@ def loadData():
     subcatagories_df = pd.read_csv(subcatagories_df_file)
     subcatagories = subcatagories_df['subcat'].tolist()
     try:
-        dfcarprice_local = pd.read_excel(str_df_file)
-    except:
+        dfcarprice_local = pd.read_excel(str_df_file, engine='xlsxwriter')
+    except ValueError as e:
+        print("Error: "+ e)
         print('DF not found: '+ str_df_file)
         
     return dfbrand_local, dfcarprice_local
 
 def saveData(dfbrand, dfcarprice):
+    print("Converting the DF to utf ASCII")
+    dfcarprice = dfcarprice.applymap(lambda x: x.encode('unicode_escape').
+                 decode('utf-8') if isinstance(x, str) else x)
     print("Saving dataframe")
-    print(dfcarprice.columns)
     try:
         dfbrand.to_csv(strBrandfile, index=False)
     except:
@@ -61,10 +66,19 @@ def saveData(dfbrand, dfcarprice):
         print('ERROR: unable to write to : '+ strBrandfile)
         print('/////////////////////////////////////////////////////////////////')
     try:
-        dfcarprice.to_excel(str_df_file, index=False)
-    except:
+        dfcarprice.to_excel(str_df_file, index=False, engine='xlsxwriter')
+    except ValueError as e:
         print('/////////////////////////////////////////////////////////////////')
+        print("ERROR: ", e)
         print('ERROR: unable to write to : '+ str_df_file)
+        print('Saving it to CSV...')
+    else:
+        try:
+             dfcarprice.to_csv(str_df_file_csv, index=False)
+             print('Saving it to CSV...DONE')
+        except ValueError as e:
+            print("ERROR: ", e)
+            print('Saving it to CSV...FAILED')
         print('/////////////////////////////////////////////////////////////////')
     try:
         subcatagories_df = pd.DataFrame(subcatagories, columns=['subcat'])

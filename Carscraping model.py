@@ -24,7 +24,7 @@ from sklearn.model_selection import train_test_split
 # %%
 DFListNames = ['link','Brand', 'Model', 'year', 'Km', 'HK','km_pr_l','price','FirstSeen','LastSeen', 'Description', 'Dealer']
 strBrandfile = r"D:\Carscarping\BrandModels.csv"
-str_df_file = r"D:\Carscarping\Carscraping.xlsx"
+str_df_file = r"D:\Carscarping\Carscraping - backup.xlsx"
 str_df_file_copy = r"D:\Carscarping\Carscraping_copy.xlsx"
 subcatagories_df_file =  r"D:\Carscarping\subcats.csv"
 subcatagories = [] 
@@ -80,7 +80,6 @@ def init_prep_data():
     dfcarprice['km_pr_l'] = dfcarprice['km_pr_l'].fillna(100)
     saveData(dfbrand, dfcarprice)
     print('There are '+ str(len(dfcarprice)) + ' cars in the dataset after trimming')
-
     #finding the number of doors
     dfcarprice['doors'] = [lastelement[-1] for lastelement in (dfcarprice['link'].astype(str).str.split("/", expand =True))[5].str.split("-").values]
     dfcarprice['cubic'] = [lastelement[0] for lastelement in (dfcarprice['link'].astype(str).str.split("/", expand =True))[5].str.split("-").values]
@@ -181,5 +180,15 @@ def main():
         print(guess_df.iloc[-1]['link'])
     print("saving")
     guess_df.to_excel(r"D:\Carscarping\firstguess.xlsx")
+    #From here on out we will add a number of features to filter on:
+    fromyear = 2014
+    notfrombrands =['audi', 'BMW', 'tesla']
+    fromdealer = 0
+    for excludedbrands in notfrombrands:
+        guess_df = guess_df.loc[~(guess_df['Brand'] == excludedbrands)] 
+    guess_df = guess_df.loc[~(guess_df['Dealer'] == fromdealer)]
+    guess_df = guess_df.loc[guess_df['year'] > fromyear]
+    guess_df.to_excel(r"D:\Carscarping\exclusiveguess.xlsx")
+
     
 main()
