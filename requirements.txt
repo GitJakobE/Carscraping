@@ -1,6 +1,6 @@
 beautifulsoup4==4.12.3
 pandas==2.2.1
-numpy==1.21.2
+numpy==1.26.4
 requests==2.26.0
 schedule==1.1.0
 selenium==4.0.0

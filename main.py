@@ -13,6 +13,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from loguru import logger
+from constants import BRAND_FILE, DF_FILE, SUBCATEGORIES_FILE
 
 # Define file paths
 strBrandfile = "BrandModels.csv"
@@ -24,6 +25,8 @@ subcatagories_df_file = "subcats.csv"
 # Define list of column names for dataframes
 DFListNames = ['link', 'Brand', 'Model', 'year', 'Km', 'HK', 'km_pr_l', 'price',
                'FirstSeen', 'LastSeen', 'Description', 'Dealer']
+# Initialize data manager
+data_manager = DataManager(BRAND_FILE, DF_FILE, SUBCATEGORIES_FILE)
 
 # Initialize global variables
 dfbrand = pd.DataFrame()
