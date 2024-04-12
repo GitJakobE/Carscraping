@@ -60,8 +60,6 @@ def saveData(dfbrand, dfcarprice):
 
 # remove strings (brand model )
 def init_prep_data():
-    dfbrand = pd.DataFrame()
-    dfcarprice = pd.DataFrame()
     dfbrand, dfcarprice, subcatagories = loadData()
     print('There are '+ str(len(dfcarprice)) + ' cars in the original dataset')
     # sets the ones with no data in km to zero NB. could be a mistake.
