@@ -25,8 +25,13 @@ Python main.py
 ```
 you will need a data folder where the csv files will go.
 
-## So the assignment is to :
+- The model can be trained using:
+```
+Python main.py -t
+```
+and will result in two Excel files with the best candidates for purchase  
+
+## Still missing:
 - SQLite to hold the data.
 - More parameters in the model since this was build in 2021 originally and didn't have many electrical cars.
-- 
 
