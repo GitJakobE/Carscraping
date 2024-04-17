@@ -1,5 +1,5 @@
 from .scraper import Scraper
-from .util import Util
+from .util import generate_urls
 
 
-__all__ = ['Scraper', 'Util']
+__all__ = ['Scraper', 'generate_urls']

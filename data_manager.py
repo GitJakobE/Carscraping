@@ -2,6 +2,8 @@ from loguru import logger
 import pandas as pd
 from constants import BRAND_FILE, DF_FILE, SUBCATEGORIES_FILE, DF_COLUMN_NAMES
 
+
+
 class DataManager:
     def __init__(self):
         self.brand_file = BRAND_FILE
@@ -24,12 +26,17 @@ class DataManager:
         subcategories_df = pd.read_csv(self.subcategories_file)
         self.subcategories = subcategories_df['subcat'].tolist()
 
-    def save_data(self):
+    def save_data(self, extention: str = "") -> None:
         logger.info("Saving data...")
         try:
-            self.df_brand.to_csv(self.brand_file, index=False)
-            self.df_car_price.to_excel(self.df_file, index=False, columns=DF_COLUMN_NAMES)
-            pd.DataFrame(self.subcategories, columns=['subcat']).to_csv(self.subcategories_file, index=False)
+            self.df_brand.to_csv(DataManager.add_extension(self.brand_file, extention), index=False)
+            self.df_car_price.to_excel(DataManager.add_extension(self.df_file, extention), index=False, columns=DF_COLUMN_NAMES)
+            pd.DataFrame(self.subcategories, columns=['subcat']).to_csv(
+                DataManager.add_extension(self.subcategories_file, extention), index=False)
             logger.success("Data saved successfully.")
         except Exception as e:
             logger.exception(f"Error saving data: {e}")
+
+    @staticmethod
+    def add_extension(name: str, ext: str):
+        return name.replace(".", ext+".")
